@@ -19,89 +19,99 @@ struct ContentView: View {
     @StateObject private var weatherVM = WeatherDataViewModel()
     
     var body: some View {
-        ZStack {
-//            Color.blue.opacity(0.5)
-//                .ignoresSafeArea(edges: .all)
-            
-            Image("background")
-                .resizable()
-                .ignoresSafeArea()
-            
-            VStack {
+        NavigationStack{
+            ZStack {
+                Image("background")
+                    .resizable()
+                    .ignoresSafeArea()
                 
-                if let name = weatherVM.apiResponse?.name,
-                   let country = weatherVM.apiResponse?.sys.country {
-                    Text("\(name), \(country)")
-                        .font(.title)
-                        .bold()
-                        .lineLimit(1)
-                        .foregroundStyle(Color.white)
-                        .padding()
-                } else {
-                    Text("New Delhi")
-                        .font(.title2)
-                        .foregroundColor(.gray)
-                        .padding()
-                }
-                
-                Spacer()
-                
-                if let image = weatherVM.apiResponse?.weather.first?.icon {
-                    AsyncImage(url: URL(string: "https://openweathermap.org/img/wn/\(image)@2x.png")) { image in
-                        image.image?.resizable()
-                            .frame(width: 200, height: 200)
-                    }
-                } else {
-                    Image(systemName: "sun.max.trianglebadge.exclamationmark.fill")
-                        .resizable()
-                        .frame(width: 200, height: 200)
-                        .foregroundStyle(.white)
-                }
-                
-                
-                VStack{
-                    if let tempKelvin = weatherVM.apiResponse?.main.temp {
-                        let temp = String(format: "%.2f", tempKelvin - 273.15)
-                        Text("\(temp) ºC")
-                                .font(.title)
-                                .bold()
-                                .foregroundStyle(.white)
+                VStack {
+                    
+                    if let name = weatherVM.apiResponse?.name,
+                       let country = weatherVM.apiResponse?.sys.country {
+                        Text("\(name), \(country)")
+                            .font(.title)
+                            .bold()
+                            .lineLimit(1)
+                            .foregroundStyle(Color.white)
+                            .padding()
                     } else {
-                        Text("Loading...")
+                        Text("New Delhi")
+                            .font(.title2)
+                            .foregroundColor(.gray)
+                            .padding()
                     }
                     
-                    if let desc = weatherVM.apiResponse?.weather.first?.description {
-                        Text("\(desc)")
-                            .font(.headline)
+                    Spacer()
+                    
+                    if let image = weatherVM.apiResponse?.weather.first?.icon {
+                        AsyncImage(url: URL(string: "https://openweathermap.org/img/wn/\(image)@2x.png")) { image in
+                            image.image?.resizable()
+                                .frame(width: 200, height: 200)
+                        }
+                    } else {
+                        Image(systemName: "sun.max.trianglebadge.exclamationmark.fill")
+                            .resizable()
+                            .frame(width: 200, height: 200)
                             .foregroundStyle(.white)
                     }
                     
-                }
-                
-                HStack(spacing: UIScreen.main.bounds.width / 3){
-                    if let minTemp = weatherVM.apiResponse?.main.tempMin, let maxTemp = weatherVM.apiResponse?.main.tempMax {
-                        Text("Min: \(minTemp)")
-                        Text("Max: \(maxTemp)")
+                    
+                    VStack{
+                        if let tempKelvin = weatherVM.apiResponse?.main.temp {
+                            let temp = String(format: "%.2f", tempKelvin - 273.15)
+                            Text("\(temp) ºC")
+                                .font(.title)
+                                .bold()
+                                .foregroundStyle(.white)
+                        } else {
+                            Text("Loading...")
+                        }
+                        
+                        if let desc = weatherVM.apiResponse?.weather.first?.description {
+                            Text("\(desc)")
+                                .font(.headline)
+                                .foregroundStyle(.white)
+                        }
+                        
                     }
-//                    else{
-//                        Text("Min")
-//                            .font(.caption)
-//                            .foregroundStyle(Color.white)
-//                    
-//                        Text("Max")
-//                            .font(.caption)
-//                            .foregroundStyle(Color.white)
-//                    }
+                    
+                    HStack(spacing: UIScreen.main.bounds.width / 3){
+                        if let minTemp = weatherVM.apiResponse?.main.tempMin, let maxTemp = weatherVM.apiResponse?.main.tempMax {
+                            Text("Min: \(minTemp)")
+                            Text("Max: \(maxTemp)")
+                        }
+                        //                    else{
+                        //                        Text("Min")
+                        //                            .font(.caption)
+                        //                            .foregroundStyle(Color.white)
+                        //
+                        //                        Text("Max")
+                        //                            .font(.caption)
+                        //                            .foregroundStyle(Color.white)
+                        //                    }
+                    }
+                    .padding(.all)
+                    
+                    Spacer()
+                    Spacer()
+                    
+                    NavigationLink(destination: CityWeatherView()) {
+                        Text("Get Weather Update for other Location")
+                            .padding()
+                            .background(Color.white.opacity(0.3))
+                            .foregroundColor(.white)
+                            .clipShape(RoundedRectangle(cornerRadius: 10))
+                    }
+                    .padding(.all)
+                    
+                    
+                    Spacer()
+                    
+                    
+                    
+                    
                 }
-                .padding(.all)
-                
-                Spacer()
-                Spacer()
-                Spacer()
-                
-                
-                
-
             }
         }
         .onChange(of: locationManager.userLocation) { coordinate in
