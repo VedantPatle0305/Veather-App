@@ -10,6 +10,11 @@ import SwiftUI
 struct CityWeatherView: View {
     @StateObject private var viewModel = CitySearchViewModel()
     @State var enteredCity = ""
+    @FocusState var isFocused: Bool
+    
+    func dismissKeyboard() {
+        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+    }
         
         var body: some View {
             NavigationStack {
@@ -25,6 +30,7 @@ struct CityWeatherView: View {
                                 .cornerRadius(10)
                             
                             Button("Check") {
+                                dismissKeyboard()
                                 Task{
                                     await viewModel.fetchCitySearchData(cityname: enteredCity)
                                 }

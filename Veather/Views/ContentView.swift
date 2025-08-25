@@ -26,6 +26,7 @@ struct ContentView: View {
                     .ignoresSafeArea()
                 
                 VStack {
+                    Spacer()
                     
                     if let name = weatherVM.apiResponse?.name,
                        let country = weatherVM.apiResponse?.sys.country {
@@ -81,15 +82,6 @@ struct ContentView: View {
                             Text("Min: \(minTemp)")
                             Text("Max: \(maxTemp)")
                         }
-                        //                    else{
-                        //                        Text("Min")
-                        //                            .font(.caption)
-                        //                            .foregroundStyle(Color.white)
-                        //
-                        //                        Text("Max")
-                        //                            .font(.caption)
-                        //                            .foregroundStyle(Color.white)
-                        //                    }
                     }
                     .padding(.all)
                     
@@ -97,7 +89,7 @@ struct ContentView: View {
                     Spacer()
                     
                     NavigationLink(destination: CityWeatherView()) {
-                        Text("Get Weather Update for other Location")
+                        Text("Get Weather Update for another City")
                             .padding()
                             .background(Color.white.opacity(0.3))
                             .foregroundColor(.white)
@@ -108,9 +100,24 @@ struct ContentView: View {
                     
                     Spacer()
                     
-                    
-                    
-                    
+                }
+            }
+        }
+        .overlay {
+            if locationManager.userLocation == nil {
+                ZStack {
+                    Color.black
+                        .ignoresSafeArea()
+
+                    VStack(spacing: 20) {
+                        ProgressView()
+                            .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                            .scaleEffect(2)
+
+                        Text("Fetching your location...")
+                            .foregroundColor(.white)
+                            .font(.headline)
+                    }
                 }
             }
         }
